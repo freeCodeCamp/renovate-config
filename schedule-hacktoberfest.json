@@ -1,7 +1,7 @@
 {
   "extends": "github>freecodecamp/renovate-config:main",
   "schedule": [
-    "every weekend before last day of September",
-    "every weekend after first day of November",
+    "every weekend before 1 day of October",
+    "every weekend after 1 day of November"
   ]
 }
