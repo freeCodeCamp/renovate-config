@@ -1,3 +1,3 @@
 {
-  "extends": ["github>freecodecamp/renovate-config:weekend"]
+  "extends": ["github>freecodecamp/renovate-config:main"]
 }
