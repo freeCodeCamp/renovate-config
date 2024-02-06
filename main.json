@@ -4,7 +4,7 @@
     "config:base",
     "helpers:pinGitHubActionDigests"
   ],
-  "prConcurrentLimit": 3,
+  "prConcurrentLimit": 5,
   "dependencyDashboard": true,
   "major": {
     "dependencyDashboardApproval": true
