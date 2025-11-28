@@ -1,23 +1,46 @@
 {
-  "labels": ["renovate"],
+  "labels": [
+    "renovate"
+  ],
   "extends": [
-    "config:base",
+    "config:recommended",
     "helpers:pinGitHubActionDigests"
   ],
   "prConcurrentLimit": 5,
+  "prCreation": "not-pending",
+  "internalChecksFilter": "strict",
   "dependencyDashboard": true,
   "major": {
     "dependencyDashboardApproval": true
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchDatasources": [
+        "npm",
+        "docker",
+        "github-tags",
+        "github-releases",
+        "terraform-provider",
+        "node-version"
+      ],
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
       "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "automerge": true
     }
   ]

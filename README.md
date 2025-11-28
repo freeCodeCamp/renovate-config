@@ -1,7 +1,7 @@
 > Our organizational level renovate configs
 
 When we onboard a new repository with `renovate` it will use the default config
-(`default.json`) that essentially ships some sane defaults from `main.json`.
+(`default.json`) that essentially ships some sane defaults from `renovate.json`.
 
 By default, once the repo has been onboarded, the renovate config looks like
 this:
@@ -43,7 +43,7 @@ If you would like to override the defaults, then use something like the below:
    ```js
    {
    "extends": [
-     "config:base",
+     "config:recommended",
      ...
      ],
    ...

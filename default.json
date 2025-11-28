@@ -1,3 +1,5 @@
 {
-  "extends": ["github>freecodecamp/renovate-config:main"]
+  "extends": [
+    "github>freecodecamp/renovate-config:main"
+  ]
 }
