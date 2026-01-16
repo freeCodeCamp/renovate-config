@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.json'
+      - '.github/workflows/validate.yml'
   pull_request:
     branches:
       - main
+    paths:
+      - '**.json'
+      - '.github/workflows/validate.yml'
 
 jobs:
   validate:
@@ -20,5 +26,17 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Validate Renovate Config
-        run: npx --yes --package renovate -- renovate-config-validator
+      - name: Validate default config (renovate.json)
+        run: npx --yes --package renovate -- renovate-config-validator --strict
+
+      - name: Validate main preset (main.json)
+        run: npx --yes --package renovate -- renovate-config-validator --strict main.json
+
+      - name: Validate default preset (default.json)
+        run: npx --yes --package renovate -- renovate-config-validator --strict default.json
+
+      - name: Validate weekend schedule preset
+        run: npx --yes --package renovate -- renovate-config-validator --strict schedule-weekend.json
+
+      - name: Validate hacktoberfest schedule preset
+        run: npx --yes --package renovate -- renovate-config-validator --strict schedule-hacktoberfest.json

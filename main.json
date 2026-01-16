@@ -6,26 +6,17 @@
     "config:recommended",
     "helpers:pinGitHubActionDigests"
   ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "rebaseWhen": "conflicted",
   "prConcurrentLimit": 5,
   "prCreation": "not-pending",
   "internalChecksFilter": "strict",
   "dependencyDashboard": true,
-  "major": {
-    "dependencyDashboardApproval": true
-  },
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "packageRules": [
-    {
-      "matchDatasources": [
-        "npm",
-        "docker",
-        "github-tags",
-        "github-releases",
-        "terraform-provider",
-        "node-version"
-      ],
-      "minimumReleaseAge": "7 days",
-      "minimumReleaseAgeBehaviour": "timestamp-optional"
-    },
     {
       "matchUpdateTypes": [
         "minor",
