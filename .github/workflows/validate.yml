@@ -13,6 +13,10 @@ on:
     paths:
       - '**.json'
       - '.github/workflows/validate.yml'
+  schedule:
+    # Run every Monday at 9:00 UTC to catch breaking changes
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
 
 jobs:
   validate:
