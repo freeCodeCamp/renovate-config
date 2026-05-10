@@ -1,11 +1,6 @@
 {
-  "labels": [
-    "renovate"
-  ],
-  "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests"
-  ],
+  "labels": ["renovate"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "major": {
     "dependencyDashboardApproval": true
   },
@@ -17,23 +12,40 @@
   "dependencyDashboard": true,
   "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "extends": ["schedule:weekly"],
+    "automerge": true
+  },
+  "postUpdateOptions": ["pnpmDedupe"],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
+      "description": "Auto-merge minor/patch/pin/digest updates for non-0.x deps.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
+      "description": "Hold 0.x minor/patch updates for manual review (semver pre-1.0 instability).",
+      "matchCurrentVersion": "/^0\\./",
+      "matchUpdateTypes": ["minor", "patch"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group all GitHub Actions updates and auto-merge.",
       "groupName": "GitHub Actions",
-      "matchManagers": [
-        "github-actions"
-      ],
+      "matchManagers": ["github-actions"],
       "automerge": true
+    },
+    {
+      "description": "Generic @types/* bucket. Consumer repos may override for specific framework groups (e.g. @types/react with React).",
+      "groupName": "types",
+      "matchPackageNames": ["@types/**"]
+    },
+    {
+      "description": "Major upgrades of node, pnpm, and typescript require explicit dashboard approval.",
+      "matchPackageNames": ["node", "pnpm", "typescript"],
+      "dependencyDashboardApproval": true
     }
   ]
 }
