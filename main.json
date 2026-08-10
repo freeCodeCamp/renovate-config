@@ -17,7 +17,6 @@
     "extends": ["schedule:weekly"],
     "automerge": true
   },
-  "postUpdateOptions": ["pnpmDedupe"],
   "packageRules": [
     {
       "description": "Auto-merge minor/patch/pin/digest updates for non-0.x deps.",
