@@ -11,11 +11,12 @@
   "internalChecksFilter": "strict",
   "dependencyDashboard": true,
   "minimumReleaseAge": "7 days",
-  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
   "lockFileMaintenance": {
     "enabled": true,
     "extends": ["schedule:weekly"],
-    "automerge": true
+    "automerge": true,
+    "minimumReleaseAgeBehaviour": "timestamp-optional"
   },
   "packageRules": [
     {
