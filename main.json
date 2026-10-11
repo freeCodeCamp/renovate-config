@@ -43,9 +43,40 @@
       "matchPackageNames": ["@types/**"]
     },
     {
-      "description": "Major upgrades of node, pnpm, and typescript require explicit dashboard approval.",
-      "matchPackageNames": ["node", "pnpm", "typescript"],
+      "description": "Updates of node and typescript require explicit dashboard approval.",
+      "matchPackageNames": ["node", "typescript"],
       "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Open major updates of GitHub-owned actions without dashboard approval.",
+      "groupName": "GitHub-owned actions",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["actions/**", "github/**"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": false
+    },
+    {
+      "description": "Open major OS image and runner updates for package-approvers review.",
+      "groupName": "OS",
+      "matchPackageNames": ["ubuntu", "debian", "alpine"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": false,
+      "automerge": false,
+      "reviewers": ["team:package-approvers"]
+    },
+    {
+      "description": "GitHub runner labels have no release timestamp.",
+      "matchDatasources": ["github-runners"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "description": "Open major package manager updates for package-approvers review.",
+      "groupName": "package managers",
+      "matchPackageNames": ["pnpm", "npm", "yarn"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": false,
+      "automerge": false,
+      "reviewers": ["team:package-approvers"]
     }
   ]
 }
