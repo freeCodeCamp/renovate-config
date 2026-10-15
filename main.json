@@ -9,6 +9,7 @@
   "prConcurrentLimit": 5,
   "prCreation": "not-pending",
   "internalChecksFilter": "strict",
+  "internalChecksAsSuccess": true,
   "dependencyDashboard": true,
   "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
