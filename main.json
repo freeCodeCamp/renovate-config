@@ -20,8 +20,8 @@
   },
   "packageRules": [
     {
-      "description": "Auto-merge minor/patch/pin/digest updates for non-0.x deps.",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "description": "Auto-merge minor/patch/pin/pinDigest/digest updates for non-0.x deps.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
@@ -38,13 +38,26 @@
       "automerge": true
     },
     {
+      "description": "Hold third-party GitHub Actions major updates for review.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "matchPackageNames": ["!actions/**", "!github/**"],
+      "automerge": false
+    },
+    {
       "description": "Generic @types/* bucket. Consumer repos may override for specific framework groups (e.g. @types/react with React).",
       "groupName": "types",
       "matchPackageNames": ["@types/**"]
     },
     {
-      "description": "Updates of node and typescript require explicit dashboard approval.",
-      "matchPackageNames": ["node", "typescript"],
+      "description": "Updates of typescript require explicit dashboard approval.",
+      "matchPackageNames": ["typescript"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Major updates of node require explicit dashboard approval.",
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
     },
     {
