@@ -91,6 +91,12 @@
       "dependencyDashboardApproval": false,
       "automerge": false,
       "reviewers": ["team:package-approvers"]
+    },
+    {
+      "description": "Update GitHub Actions on Mondays (UTC), ahead of other updates, to cut code-owner review requests.",
+      "matchManagers": ["github-actions"],
+      "schedule": ["* * * * 1"],
+      "prPriority": 1
     }
   ]
 }
