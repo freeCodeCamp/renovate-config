@@ -3,5 +3,12 @@
   "extends": [
     "github>freecodecamp/renovate-config",
     "schedule:weekends"
+  ],
+  "packageRules": [
+    {
+      "description": "Keep GitHub Actions on the weekend schedule.",
+      "matchManagers": ["github-actions"],
+      "schedule": ["* * * * 0,6"]
+    }
   ]
 }
