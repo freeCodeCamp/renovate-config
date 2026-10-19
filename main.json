@@ -17,7 +17,8 @@
     "enabled": true,
     "extends": ["schedule:weekly"],
     "automerge": true,
-    "minimumReleaseAgeBehaviour": "timestamp-optional"
+    "minimumReleaseAgeBehaviour": "timestamp-optional",
+    "prCreation": "immediate"
   },
   "packageRules": [
     {
