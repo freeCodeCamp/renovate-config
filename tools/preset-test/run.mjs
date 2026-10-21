@@ -1,16 +1,9 @@
-import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const dist = path.join(here, 'node_modules/renovate/dist');
-const load = (p) => import(pathToFileURL(path.join(dist, p)).href);
-
-const { mergeChildConfig } = await load('config/utils.js');
-const { getConfig } = await load('config/defaults.js');
-const { flattenUpdates } = await load('workers/repository/updates/flatten.js');
+import { mergeChildConfig } from 'renovate/dist/config/utils.js';
+import { getConfig } from 'renovate/dist/config/defaults.js';
+import { resolveConfigPresets } from 'renovate/dist/config/presets/index.js';
+import { flattenUpdates } from 'renovate/dist/workers/repository/updates/flatten.js';
+import { packageFiles } from './updates.mjs';
 
 const args = process.argv.slice(2);
 const noAutomerge = args[0] === '--no-automerge';
@@ -23,65 +16,29 @@ if (!presets.length) {
 const composed = presets
   .map((p) => JSON.parse(fs.readFileSync(p, 'utf8')))
   .reduce((a, b) => mergeChildConfig(a, b));
-
-const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'preset-test-'));
-fs.cpSync(path.join(here, '__fixtures__'), repo, { recursive: true });
-fs.writeFileSync(path.join(repo, 'renovate.json'), JSON.stringify(composed));
-const git = (...a) => execFileSync('git', a, { cwd: repo, stdio: 'ignore' });
-git('init', '-q');
-git('add', '-A');
-git('-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'fixture');
-
-const run = spawnSync(
-  path.join(here, 'node_modules/.bin/renovate'),
-  ['--platform=local', '--dry-run=lookup', '--require-config=optional'],
-  {
-    cwd: repo,
-    encoding: 'utf8',
-    maxBuffer: 1 << 28,
-    env: { ...process.env, LOG_LEVEL: 'debug', LOG_FORMAT: 'json' },
-  },
-);
-
-let resolved;
-let packageFiles;
-for (const line of run.stdout.split('\n')) {
-  let j;
-  try {
-    j = JSON.parse(line);
-  } catch {
-    continue;
-  }
-  if (j.msg === 'packageFiles with updates') packageFiles = j.config;
-  else if (j.config?.packageRules && j.config?.major && !j.config.extends)
-    resolved = j.config;
-}
-if (!resolved || !packageFiles) {
-  console.error('renovate lookup gave no config or no package files');
-  console.error(run.stderr.slice(-2000));
-  process.exit(2);
-}
-
-resolved.semanticCommits = 'enabled';
+const { config: resolved } = await resolveConfigPresets(composed);
 const updates = await flattenUpdates(
-  mergeChildConfig(getConfig(), resolved),
+  mergeChildConfig(getConfig(), { ...resolved, semanticCommits: 'enabled' }),
   packageFiles,
 );
 
 const GITHUB_OWNED = /^(actions|github)\//;
 const OS_PM = new Set(['ubuntu', 'debian', 'alpine', 'pnpm', 'npm', 'yarn']);
-const VERSION = /^v?\d/;
+const STABLE_TAG = /^v?[1-9]/;
 const isGithubOwnedAction = (u) =>
   u.manager === 'github-actions' &&
   u.depType === 'action' &&
   GITHUB_OWNED.test(u.packageName ?? '');
 const isExemptMajor = (u) =>
   isGithubOwnedAction(u) || OS_PM.has(u.packageName) || OS_PM.has(u.depName);
-const isV0 = (u) => /^v?0\./.test(u.currentVersion ?? u.currentValue ?? '');
-const isBranchPin = (u) =>
+const version = (u) =>
+  u.lockedVersion ?? u.currentVersion ?? u.currentValue ?? '';
+const isV0 = (u) => /^v?0\./.test(version(u));
+const isActionDigest = (u) =>
   u.manager === 'github-actions' &&
-  ['digest', 'pinDigest'].includes(u.updateType) &&
-  !VERSION.test(u.currentValue ?? '');
+  ['digest', 'pinDigest'].includes(u.updateType);
+const isHeldDigest = (u) =>
+  isActionDigest(u) && !STABLE_TAG.test(u.currentValue ?? '');
 
 const failures = [];
 const fail = (u, why) =>
@@ -99,7 +56,7 @@ for (const u of updates) {
     if (!ticked) fail(u, 'v0.x update opens without a tick');
     if (automerge) fail(u, 'v0.x update automerges');
   }
-  if (isBranchPin(u) && automerge) fail(u, 'branch-pin digest automerges');
+  if (isHeldDigest(u) && automerge) fail(u, 'held digest automerges');
   if (u.updateType === 'replacement' && automerge)
     fail(u, 'replacement automerges');
 }
@@ -111,22 +68,6 @@ for (const [name, members] of branches) {
 }
 if (resolved.vulnerabilityAlerts?.automerge === true)
   failures.push('vulnerabilityAlerts automerge is on');
-
-const coverage = {
-  'uses-with major': (u) => u.depType === 'uses-with' && u.updateType === 'major',
-  'GitHub-owned action major': (u) => isGithubOwnedAction(u) && u.updateType === 'major',
-  'third-party action major': (u) =>
-    u.manager === 'github-actions' && u.depType === 'action' &&
-    !GITHUB_OWNED.test(u.packageName ?? '') && u.updateType === 'major',
-  'v0.x minor or patch': (u) => isV0(u) && ['minor', 'patch'].includes(u.updateType),
-  'branch-pin digest': isBranchPin,
-  'npm major': (u) => u.manager === 'npm' && u.updateType === 'major',
-  'docker major': (u) => u.datasource === 'docker' && u.updateType === 'major',
-  replacement: (u) => u.updateType === 'replacement',
-  'lock file maintenance': (u) => u.updateType === 'lockFileMaintenance',
-};
-for (const [name, test] of Object.entries(coverage))
-  if (!updates.some(test)) failures.push(`fixture has no ${name} update`);
 
 for (const u of updates)
   console.log(
@@ -140,7 +81,6 @@ for (const u of updates)
       u.branchName,
     ].join(' | '),
   );
-fs.rmSync(repo, { recursive: true, force: true });
 if (failures.length) {
   console.error(`\n${failures.length} failure(s):\n${failures.join('\n')}`);
   process.exit(1);

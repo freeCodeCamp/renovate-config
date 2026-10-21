@@ -1,5 +1,0 @@
-services:
-  ui:
-    image: provectuslabs/kafka-ui:v0.6.0
-  cache:
-    image: redis:6

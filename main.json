@@ -34,27 +34,12 @@
       "automerge": true
     },
     {
-      "description": "Hold 0.x and v0.x minor/patch updates for dashboard approval, one PR each (semver pre-1.0 instability).",
-      "matchCurrentVersion": "/^v?0\\./",
-      "matchUpdateTypes": ["minor", "patch"],
+      "description": "Hold action digest updates of a branch pin or a 0.x tag out of the group, with no auto-merge.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "matchCurrentVersion": "!/^v?[1-9]/",
       "groupName": null,
-      "dependencyDashboardApproval": true,
       "automerge": false
-    },
-    {
-      "description": "Hold action digest updates out of the group, with no auto-merge: a branch pin, a bare SHA or a 0.x tag has no stable release to review.",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["digest", "pinDigest"],
-      "automerge": false,
-      "groupName": null
-    },
-    {
-      "description": "Auto-merge action digest updates that follow a 1.x or later version tag.",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["digest", "pinDigest"],
-      "matchCurrentVersion": "/^v?[1-9]/",
-      "automerge": true,
-      "groupName": "GitHub Actions"
     },
     {
       "description": "Hold third-party GitHub Actions major updates for review.",
@@ -67,6 +52,14 @@
       "description": "Generic @types/* bucket. Consumer repos may override for specific framework groups (e.g. @types/react with React).",
       "groupName": "types",
       "matchPackageNames": ["@types/**"]
+    },
+    {
+      "description": "Hold 0.x and v0.x minor/patch updates for dashboard approval, one PR each (semver pre-1.0 instability).",
+      "matchCurrentVersion": "/^v?0\\./",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": null,
+      "dependencyDashboardApproval": true,
+      "automerge": false
     },
     {
       "description": "Updates of typescript require explicit dashboard approval.",

@@ -68,10 +68,6 @@ jobs:
 
       - name: Test main preset gates
         run: node run.mjs ../../main.json
-        env:
-          GITHUB_COM_TOKEN: ${{ github.token }}
 
       - name: Test main and automerge preset gates
         run: node run.mjs ../../main.json ../../automerge.json
-        env:
-          GITHUB_COM_TOKEN: ${{ github.token }}
