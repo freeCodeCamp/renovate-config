@@ -1,0 +1,11 @@
+{
+  "name": "preset-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node run.mjs ../../main.json"
+  },
+  "dependencies": {
+    "renovate": "44.171.8"
+  }
+}

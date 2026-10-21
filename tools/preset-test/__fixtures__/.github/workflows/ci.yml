@@ -1,0 +1,20 @@
+on: push
+jobs:
+  a:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "2.7"
+      - uses: codecov/codecov-action@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: softprops/action-gh-release@v0.1.14
+      - uses: naomi-lgbt/dependency-pin-check@e05226b5c87d7c2651bcc8578890587623ccaa5f # main
+      - uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
