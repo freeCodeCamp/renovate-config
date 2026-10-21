@@ -66,9 +66,19 @@
       "description": "Open major updates of GitHub-owned actions without dashboard approval.",
       "groupName": "GitHub-owned actions",
       "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action"],
       "matchPackageNames": ["actions/**", "github/**"],
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": false
+    },
+    {
+      "description": "Hold major runtime versions in workflows (setup-node, setup-python, setup-go) for dashboard approval, one PR each.",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["uses-with"],
+      "matchUpdateTypes": ["major"],
+      "groupName": null,
+      "dependencyDashboardApproval": true,
+      "automerge": false
     },
     {
       "description": "Open major OS image and runner updates for package-approvers review.",
