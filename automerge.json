@@ -1,0 +1,29 @@
+{
+  "description": "Opt-in auto-merge. Extend it after the default preset, and only in a repository with a required status check.",
+  "lockFileMaintenance": {
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Auto-merge minor/patch/pin/pinDigest/digest updates for non-0.x deps.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
+      "matchCurrentVersion": "!/^v?0/",
+      "automerge": true
+    },
+    {
+      "description": "Do not auto-merge action digest updates unless they follow a 1.x or later version tag.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "matchCurrentVersion": "!/^v?[1-9]/",
+      "automerge": false
+    },
+    {
+      "description": "Auto-merge major updates of GitHub-owned actions.",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action"],
+      "matchPackageNames": ["actions/**", "github/**"],
+      "matchUpdateTypes": ["major"],
+      "automerge": true
+    }
+  ]
+}
