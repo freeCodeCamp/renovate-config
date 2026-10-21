@@ -17,4 +17,3 @@ jobs:
           version: 8
       - uses: softprops/action-gh-release@v0.1.14
       - uses: naomi-lgbt/dependency-pin-check@e05226b5c87d7c2651bcc8578890587623ccaa5f # main
-      - uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191

@@ -24,20 +24,37 @@
     {
       "description": "Auto-merge minor/patch/pin/pinDigest/digest updates for non-0.x deps.",
       "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
-      "matchCurrentVersion": "!/^0/",
+      "matchCurrentVersion": "!/^v?0/",
       "automerge": true
-    },
-    {
-      "description": "Hold 0.x minor/patch updates for manual review (semver pre-1.0 instability).",
-      "matchCurrentVersion": "/^0\\./",
-      "matchUpdateTypes": ["minor", "patch"],
-      "dependencyDashboardApproval": true
     },
     {
       "description": "Group all GitHub Actions updates and auto-merge.",
       "groupName": "GitHub Actions",
       "matchManagers": ["github-actions"],
       "automerge": true
+    },
+    {
+      "description": "Hold 0.x and v0.x minor/patch updates for dashboard approval, one PR each (semver pre-1.0 instability).",
+      "matchCurrentVersion": "/^v?0\\./",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": null,
+      "dependencyDashboardApproval": true,
+      "automerge": false
+    },
+    {
+      "description": "Hold action digest updates out of the group, with no auto-merge: a branch pin, a bare SHA or a 0.x tag has no stable release to review.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "automerge": false,
+      "groupName": null
+    },
+    {
+      "description": "Auto-merge action digest updates that follow a 1.x or later version tag.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "matchCurrentVersion": "/^v?[1-9]/",
+      "automerge": true,
+      "groupName": "GitHub Actions"
     },
     {
       "description": "Hold third-party GitHub Actions major updates for review.",

@@ -103,6 +103,12 @@ for (const u of updates) {
   if (u.updateType === 'replacement' && automerge)
     fail(u, 'replacement automerges');
 }
+const branches = Map.groupBy(updates, (u) => u.branchName);
+for (const [name, members] of branches) {
+  const automerges = members.map((u) => u.automerge === true);
+  if (automerges.includes(true) && automerges.includes(false))
+    failures.push(`branch mixes automerge and held updates: ${name}`);
+}
 if (resolved.vulnerabilityAlerts?.automerge === true)
   failures.push('vulnerabilityAlerts automerge is on');
 
