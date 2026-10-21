@@ -4,19 +4,16 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '**.json'
-      - '.github/workflows/validate.yml'
   pull_request:
     branches:
       - main
-    paths:
-      - '**.json'
-      - '.github/workflows/validate.yml'
   schedule:
     # Run every Monday at 9:00 UTC to catch breaking changes
     - cron: '0 9 * * 1'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   validate:
@@ -36,6 +33,9 @@ jobs:
       - name: Validate main preset (main.json)
         run: npx --yes --package renovate -- renovate-config-validator --strict main.json
 
+      - name: Validate automerge preset (automerge.json)
+        run: npx --yes --package renovate -- renovate-config-validator --strict automerge.json
+
       - name: Validate default preset (default.json)
         run: npx --yes --package renovate -- renovate-config-validator --strict default.json
 
@@ -44,3 +44,34 @@ jobs:
 
       - name: Validate hacktoberfest schedule preset
         run: npx --yes --package renovate -- renovate-config-validator --strict schedule-hacktoberfest.json
+
+  preset-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/preset-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: tools/preset-test/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Test main preset gates
+        run: node run.mjs ../../main.json
+        env:
+          GITHUB_COM_TOKEN: ${{ github.token }}
+
+      - name: Test main and automerge preset gates
+        run: node run.mjs ../../main.json ../../automerge.json
+        env:
+          GITHUB_COM_TOKEN: ${{ github.token }}
