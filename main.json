@@ -16,22 +16,14 @@
   "lockFileMaintenance": {
     "enabled": true,
     "extends": ["schedule:weekly"],
-    "automerge": true,
     "minimumReleaseAgeBehaviour": "timestamp-optional",
     "prCreation": "immediate"
   },
   "packageRules": [
     {
-      "description": "Auto-merge minor/patch/pin/pinDigest/digest updates for non-0.x deps.",
-      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
-      "matchCurrentVersion": "!/^v?0/",
-      "automerge": true
-    },
-    {
-      "description": "Group all GitHub Actions updates and auto-merge.",
+      "description": "Group all GitHub Actions updates.",
       "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"],
-      "automerge": true
+      "matchManagers": ["github-actions"]
     },
     {
       "description": "Hold action digest updates of a branch pin or a 0.x tag out of the group, with no auto-merge.",
