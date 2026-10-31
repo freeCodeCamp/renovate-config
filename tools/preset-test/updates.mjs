@@ -50,6 +50,7 @@ export const packageFiles = {
         dep(action('pnpm/action-setup', 'v2'), up('major', 'v5')),
         dep(action('softprops/action-gh-release', 'v0.1.14'), up('patch', 'v0.1.15'), up('major', 'v2'), up('pinDigest', 'v0.1.14', pin('e'))),
         dep(action('naomi-lgbt/dependency-pin-check', 'main', { currentVersion: undefined, currentDigest: 'f'.repeat(40) }), up('digest', 'main', pin('0'))),
+        dep(action('example/renamed-action', 'v2.0.0'), up('replacement', 'v2.0.0', { newName: 'example/new-action' })),
         dep({ depName: 'node', packageName: 'actions/node-versions', depType: 'uses-with', datasource: 'github-releases', currentValue: '18' }, up('major', '24')),
         dep({ depName: 'pnpm', depType: 'uses-with', datasource: 'npm', currentValue: '8' }, up('major', '10')),
         dep({ depName: 'ubuntu', depType: 'github-runner', datasource: 'github-runners', currentValue: '22.04' }, up('major', '24.04')),

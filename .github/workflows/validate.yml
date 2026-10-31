@@ -66,8 +66,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Test main preset gates
-        run: node run.mjs ../../main.json
+      - name: Test main preset gates, with no automerge
+        run: node run.mjs --no-automerge ../../main.json
 
       - name: Test main and automerge preset gates
         run: node run.mjs ../../main.json ../../automerge.json
