@@ -6,6 +6,6 @@
     "test": "node run.mjs --no-automerge ../../main.json"
   },
   "dependencies": {
-    "renovate": "44.171.8"
+    "renovate": "44.181.6"
   }
 }
