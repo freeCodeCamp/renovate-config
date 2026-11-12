@@ -1,5 +1,12 @@
 {
   "extends": [
     "github>freecodecamp/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Update the renovate package once a month.",
+      "matchPackageNames": ["renovate"],
+      "extends": ["schedule:monthly"]
+    }
   ]
 }
