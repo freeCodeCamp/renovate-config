@@ -18,6 +18,8 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      VALIDATOR: tools/preset-test/node_modules/.bin/renovate-config-validator
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -26,24 +28,29 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: tools/preset-test/package-lock.json
+
+      - name: Install the locked Renovate
+        run: npm ci --prefix tools/preset-test
 
       - name: Validate default config (renovate.json)
-        run: npx --yes --package renovate -- renovate-config-validator --strict
+        run: $VALIDATOR --strict
 
       - name: Validate main preset (main.json)
-        run: npx --yes --package renovate -- renovate-config-validator --strict main.json
+        run: $VALIDATOR --strict main.json
 
       - name: Validate automerge preset (automerge.json)
-        run: npx --yes --package renovate -- renovate-config-validator --strict automerge.json
+        run: $VALIDATOR --strict automerge.json
 
       - name: Validate default preset (default.json)
-        run: npx --yes --package renovate -- renovate-config-validator --strict default.json
+        run: $VALIDATOR --strict default.json
 
       - name: Validate weekend schedule preset
-        run: npx --yes --package renovate -- renovate-config-validator --strict schedule-weekend.json
+        run: $VALIDATOR --strict schedule-weekend.json
 
       - name: Validate hacktoberfest schedule preset
-        run: npx --yes --package renovate -- renovate-config-validator --strict schedule-hacktoberfest.json
+        run: $VALIDATOR --strict schedule-hacktoberfest.json
 
   preset-test:
     runs-on: ubuntu-latest
