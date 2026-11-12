@@ -83,13 +83,11 @@
       "automerge": false
     },
     {
-      "description": "Open major OS image and runner updates for package-approvers review.",
+      "description": "Group major OS image and runner updates; the major dashboard tick applies.",
       "groupName": "OS",
       "matchPackageNames": ["ubuntu", "debian", "alpine"],
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": false,
-      "automerge": false,
-      "reviewers": ["team:package-approvers"]
+      "automerge": false
     },
     {
       "description": "GitHub runner labels have no release timestamp.",
@@ -97,13 +95,11 @@
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
-      "description": "Open major package manager updates for package-approvers review.",
+      "description": "Group major package manager updates; the major dashboard tick applies.",
       "groupName": "package managers",
-      "matchPackageNames": ["pnpm", "npm", "yarn"],
+      "matchPackageNames": ["pnpm", "npm", "yarn", "@yarnpkg/cli-dist"],
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": false,
-      "automerge": false,
-      "reviewers": ["team:package-approvers"]
+      "automerge": false
     },
     {
       "description": "Update GitHub Actions on Mondays (UTC), ahead of other updates, to cut code-owner review requests.",

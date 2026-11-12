@@ -29,8 +29,7 @@ const isGithubOwnedAction = (u) =>
   u.manager === 'github-actions' &&
   u.depType === 'action' &&
   GITHUB_OWNED.test(u.packageName ?? '');
-const isExemptMajor = (u) =>
-  isGithubOwnedAction(u) || OS_PM.has(u.packageName) || OS_PM.has(u.depName);
+const isOsPm = (u) => OS_PM.has(u.packageName) || OS_PM.has(u.depName);
 const version = (u) =>
   u.lockedVersion ?? u.currentVersion ?? u.currentValue ?? '';
 const isV0 = (u) => /^v?0\./.test(version(u));
@@ -49,8 +48,10 @@ for (const u of updates) {
   const ticked = u.dependencyDashboardApproval === true;
   if (noAutomerge && automerge) fail(u, 'automerge on with no opt-in');
   if (u.updateType === 'major') {
-    if (!isExemptMajor(u) && !ticked) fail(u, 'major opens without a tick');
+    if (!isGithubOwnedAction(u) && !ticked) fail(u, 'major opens without a tick');
     if (automerge && !isGithubOwnedAction(u)) fail(u, 'major automerges');
+    if (isOsPm(u) && (u.reviewers ?? []).length)
+      fail(u, 'OS or package manager major requests reviewers');
   }
   if (['minor', 'patch'].includes(u.updateType) && isV0(u)) {
     if (!ticked) fail(u, 'v0.x update opens without a tick');
