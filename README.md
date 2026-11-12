@@ -26,19 +26,7 @@ If you would like to override the defaults, then use something like the below:
    }
    ```
 
-2. To use the hacktoberfest schedule:
-
-   ```js
-   {
-    "extends": [
-      "github>freecodecamp/renovate-config:schedule-hacktoberfest",
-      ...
-      ],
-    ...
-   }
-   ```
-
-3. OR start from scratch:
+2. OR start from scratch:
 
    ```js
    {

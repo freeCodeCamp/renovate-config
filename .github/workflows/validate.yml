@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 9 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -50,32 +48,10 @@ jobs:
       - name: Validate weekend schedule preset
         run: $VALIDATOR schedule-weekend.json
 
-      - name: Validate hacktoberfest schedule preset
-        run: $VALIDATOR schedule-hacktoberfest.json
-
-  preset-test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: tools/preset-test
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: tools/preset-test/package-lock.json
-
-      - name: Install
-        run: npm ci
-
       - name: Test main preset gates, with no automerge
+        working-directory: tools/preset-test
         run: node run.mjs --no-automerge ../../main.json
 
       - name: Test main and automerge preset gates
+        working-directory: tools/preset-test
         run: node run.mjs ../../main.json ../../automerge.json
