@@ -59,12 +59,6 @@
       "dependencyDashboardApproval": true
     },
     {
-      "description": "Major updates of node require explicit dashboard approval.",
-      "matchPackageNames": ["node"],
-      "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true
-    },
-    {
       "description": "Open major updates of GitHub-owned actions without dashboard approval.",
       "groupName": "GitHub-owned actions",
       "matchManagers": ["github-actions"],
@@ -74,7 +68,7 @@
       "dependencyDashboardApproval": false
     },
     {
-      "description": "Hold major runtime versions in workflows (setup-node, setup-python, setup-go) for dashboard approval, one PR each.",
+      "description": "Hold major runtime versions in workflows (setup-python, setup-go) for dashboard approval, one PR each.",
       "matchManagers": ["github-actions"],
       "matchDepTypes": ["uses-with"],
       "matchUpdateTypes": ["major"],
@@ -83,7 +77,17 @@
       "automerge": false
     },
     {
-      "description": "Open major OS image and runner updates for package-approvers review.",
+      "description": "Open Node.js LTS majors without dashboard approval, in one group, for package-approvers review.",
+      "matchDepNames": ["node"],
+      "matchDatasources": ["node-version", "docker", "github-releases"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "Node.js",
+      "dependencyDashboardApproval": false,
+      "automerge": false,
+      "reviewers": ["team:package-approvers"]
+    },
+    {
+      "description": "Open major OS image and runner updates without dashboard approval, for package-approvers review.",
       "groupName": "OS",
       "matchPackageNames": ["ubuntu", "debian", "alpine"],
       "matchUpdateTypes": ["major"],
@@ -97,9 +101,9 @@
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
-      "description": "Open major package manager updates for package-approvers review.",
+      "description": "Open major package manager updates without dashboard approval, for package-approvers review.",
       "groupName": "package managers",
-      "matchPackageNames": ["pnpm", "npm", "yarn"],
+      "matchPackageNames": ["pnpm", "npm", "yarn", "@yarnpkg/cli-dist"],
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": false,
       "automerge": false,

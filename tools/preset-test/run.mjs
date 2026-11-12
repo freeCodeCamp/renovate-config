@@ -29,8 +29,11 @@ const isGithubOwnedAction = (u) =>
   u.manager === 'github-actions' &&
   u.depType === 'action' &&
   GITHUB_OWNED.test(u.packageName ?? '');
-const isExemptMajor = (u) =>
-  isGithubOwnedAction(u) || OS_PM.has(u.packageName) || OS_PM.has(u.depName);
+const isOsPm = (u) => OS_PM.has(u.packageName) || OS_PM.has(u.depName);
+const isNode = (u) =>
+  u.depName === 'node' &&
+  ['node-version', 'docker', 'github-releases'].includes(u.datasource);
+const isEager = (u) => isOsPm(u) || isNode(u);
 const version = (u) =>
   u.lockedVersion ?? u.currentVersion ?? u.currentValue ?? '';
 const isV0 = (u) => /^v?0\./.test(version(u));
@@ -49,8 +52,16 @@ for (const u of updates) {
   const ticked = u.dependencyDashboardApproval === true;
   if (noAutomerge && automerge) fail(u, 'automerge on with no opt-in');
   if (u.updateType === 'major') {
-    if (!isExemptMajor(u) && !ticked) fail(u, 'major opens without a tick');
+    if (!isGithubOwnedAction(u) && !isEager(u) && !ticked)
+      fail(u, 'major opens without a tick');
     if (automerge && !isGithubOwnedAction(u)) fail(u, 'major automerges');
+    if (isEager(u)) {
+      if (ticked) fail(u, 'OS, package manager or node major needs a tick');
+      if (!(u.reviewers ?? []).includes('team:package-approvers'))
+        fail(u, 'OS, package manager or node major lacks package-approvers');
+    }
+    if (isNode(u) && u.groupName !== 'Node.js')
+      fail(u, 'node major is not in the Node.js group');
   }
   if (['minor', 'patch'].includes(u.updateType) && isV0(u)) {
     if (!ticked) fail(u, 'v0.x update opens without a tick');
